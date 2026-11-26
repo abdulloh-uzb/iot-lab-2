@@ -1,35 +1,30 @@
-#include "Arduino.h"
+#include <Arduino.h>
 
-#define LIGHT_SENSOR_PIN 33
-#define ALERT_ON_LEVEL 3000
-#define ALERT_OFF_LEVEL 2500
+const int lightSensorPin = 33;
+const int alertOnLevel = 3000;
+const int alertOffLevel = 2500;
 
 bool alertActive = false;
 
 
 /****************************************************/
-void setup(void)
-{
-    Serial.begin(115200);
+void setup() {
+  Serial.begin(115200);
 
-    pinMode(LIGHT_SENSOR_PIN, INPUT);
+  pinMode(lightSensorPin, INPUT);
 }
 
 /****************************************************/
-void loop(void)
-{
-    int value = analogRead(LIGHT_SENSOR_PIN);
+void loop() {
+  int value = analogRead(lightSensorPin);
 
-    if (!alertActive && value > ALERT_ON_LEVEL)
-    {
-        alertActive = true;
-        Serial.println("ALERT=1");
-    }
-    else if (alertActive && value < ALERT_OFF_LEVEL)
-    {
-        alertActive = false;
-        Serial.println("ALERT=0");
-    }
+  if (!alertActive && value > alertOnLevel) {
+    alertActive = true;
+    Serial.println("ALERT=1");
+  } else if (alertActive && value < alertOffLevel) {
+    alertActive = false;
+    Serial.println("ALERT=0");
+  }
 
-    delay(300);
+  delay(300);
 }

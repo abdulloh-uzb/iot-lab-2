@@ -1,47 +1,41 @@
-#include "Arduino.h"
+#include <Arduino.h>
 
-#define LIGHT_SENSOR_PIN 33
-#define SAMPLES_COUNT 10
+const int lightSensorPin = 33;
 
 
 /****************************************************/
-void setup(void)
-{
-    Serial.begin(115200);
+void setup() {
+  Serial.begin(115200);
 
-    pinMode(LIGHT_SENSOR_PIN, INPUT);
+  pinMode(lightSensorPin, INPUT);
 }
 
 /****************************************************/
-void loop(void)
-{
-    int min_value = 4095;
-    int max_value = 0;
-    long sum = 0;
+void loop() {
+  int minValue = 4095;
+  int maxValue = 0;
+  long sum = 0;
 
-    for (int i = 0; i < SAMPLES_COUNT; i++)
-    {
-        int value = analogRead(LIGHT_SENSOR_PIN);
+  for (int i = 0; i < 10; i++) {
+    int value = analogRead(lightSensorPin);
 
-        if (value < min_value)
-        {
-            min_value = value;
-        }
-        if (value > max_value)
-        {
-            max_value = value;
-        }
-        sum += value;
+    if (value < minValue) {
+      minValue = value;
     }
+    if (value > maxValue) {
+      maxValue = value;
+    }
+    sum += value;
+  }
 
-    int avg = sum / SAMPLES_COUNT;
+  int avg = sum / 10;
 
-    Serial.print("min=");
-    Serial.print(min_value);
-    Serial.print(" max=");
-    Serial.print(max_value);
-    Serial.print(" avg=");
-    Serial.println(avg);
+  Serial.print("min=");
+  Serial.print(minValue);
+  Serial.print(" max=");
+  Serial.print(maxValue);
+  Serial.print(" avg=");
+  Serial.println(avg);
 
-    delay(1000);
+  delay(1000);
 }

@@ -1,3 +1,6 @@
 .pio
 .vscode/launch.json
 .vscode/c_cpp_properties.json
+
+# local credentials
+src/secrets.h

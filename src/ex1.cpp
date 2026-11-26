@@ -1,45 +1,40 @@
-#include "Arduino.h"
+#include <Arduino.h>
 
-#define RED_LED_PIN 26
-#define GREEN_LED_PIN 27
-#define YELLOW_LED_PIN 12
-#define BLUE_LED_PIN 14
+const int redLedPin = 26;
+const int greenLedPin = 27;
+const int yellowLedPin = 12;
+const int blueLedPin = 14;
 
-char* names[6] = {"RED", "GREEN", "YELLOW", "BLUE", "YELLOW", "GREEN"};
-int leds_order[6] = { RED_LED_PIN, GREEN_LED_PIN, YELLOW_LED_PIN, BLUE_LED_PIN, YELLOW_LED_PIN, GREEN_LED_PIN};
+const char* ledNames[6] = {"RED", "GREEN", "YELLOW", "BLUE", "YELLOW", "GREEN"};
+int chaseOrder[6] = {redLedPin, greenLedPin, yellowLedPin, blueLedPin, yellowLedPin, greenLedPin};
 int step = 0;
 
 
 /****************************************************/
-void setup(void)
-{
-    Serial.begin(115200);
+void setup() {
+  Serial.begin(115200);
 
-    pinMode(RED_LED_PIN, OUTPUT);
-    pinMode(GREEN_LED_PIN, OUTPUT);
-    pinMode(YELLOW_LED_PIN, OUTPUT);
-    pinMode(BLUE_LED_PIN, OUTPUT);
+  pinMode(redLedPin, OUTPUT);
+  pinMode(greenLedPin, OUTPUT);
+  pinMode(yellowLedPin, OUTPUT);
+  pinMode(blueLedPin, OUTPUT);
 }
 
 /****************************************************/
-void loop(void)
-{
+void loop() {
+  for (int i = 0; i < 4; i++) {
+    digitalWrite(chaseOrder[i], LOW);
+  }
 
-    for (int i = 0; i < 4; i++)
-    {
-        digitalWrite(leds_order[i], LOW);
-    }
+  digitalWrite(chaseOrder[step], HIGH);
 
-    digitalWrite(leds_order[step], HIGH);
-    
-    Serial.print("chase=");
-    Serial.println(names[step]);
+  Serial.print("chase=");
+  Serial.println(ledNames[step]);
 
-    Serial.print("step=");
-    Serial.println(step);
+  Serial.print("step=");
+  Serial.println(step);
 
-    step = (step + 1) % 6;
+  step = (step + 1) % 6;
 
-    delay(150);
-
+  delay(150);
 }

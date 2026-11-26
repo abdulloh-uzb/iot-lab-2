@@ -1,56 +1,49 @@
-#include "Arduino.h"
+#include <Arduino.h>
 
-#define RED_LED_PIN 26
-#define GREEN_LED_PIN 27
-#define YELLOW_LED_PIN 12
-#define BLUE_LED_PIN 14
+const int redLedPin = 26;
+const int greenLedPin = 27;
+const int yellowLedPin = 12;
+const int blueLedPin = 14;
 
-#define BUTTON_PIN 25
+const int buttonPin = 25;
 
-int leds_order[4] = {RED_LED_PIN, GREEN_LED_PIN, YELLOW_LED_PIN, BLUE_LED_PIN};
-int count = 0;
-int last_button_state = LOW;
+int ledPins[4] = {redLedPin, greenLedPin, yellowLedPin, blueLedPin};
+int pressCount = 0;
+int lastButtonState = LOW;
 
 
 /****************************************************/
-void setup(void)
-{
-    Serial.begin(115200);
+void setup() {
+  Serial.begin(115200);
 
-    pinMode(RED_LED_PIN, OUTPUT);
-    pinMode(GREEN_LED_PIN, OUTPUT);
-    pinMode(YELLOW_LED_PIN, OUTPUT);
-    pinMode(BLUE_LED_PIN, OUTPUT);
+  pinMode(redLedPin, OUTPUT);
+  pinMode(greenLedPin, OUTPUT);
+  pinMode(yellowLedPin, OUTPUT);
+  pinMode(blueLedPin, OUTPUT);
 
-    pinMode(BUTTON_PIN, INPUT);
+  pinMode(buttonPin, INPUT);
 }
 
 /****************************************************/
-void loop(void)
-{
-    int button_state = digitalRead(BUTTON_PIN);
+void loop() {
+  int buttonState = digitalRead(buttonPin);
 
-    if (button_state == HIGH && last_button_state == LOW)
-    {
-        count = (count + 1) % 5;
+  if (buttonState == HIGH && lastButtonState == LOW) {
+    pressCount = (pressCount + 1) % 5;
 
-        Serial.print("count=");
-        Serial.println(count);
+    Serial.print("count=");
+    Serial.println(pressCount);
 
-        for (int i = 0; i < 4; i++)
-        {
-            if (i < count)
-            {
-                digitalWrite(leds_order[i], HIGH);
-            }
-            else
-            {
-                digitalWrite(leds_order[i], LOW);
-            }
-        }
+    for (int i = 0; i < 4; i++) {
+      if (i < pressCount) {
+        digitalWrite(ledPins[i], HIGH);
+      } else {
+        digitalWrite(ledPins[i], LOW);
+      }
     }
+  }
 
-    last_button_state = button_state;
+  lastButtonState = buttonState;
 
-    delay(20);
+  delay(20);
 }
