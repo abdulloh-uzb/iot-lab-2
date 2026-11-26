@@ -1,56 +1,49 @@
-# IoT 2026 - Lab 2 Template
+# IoT Labs: ESP32 (Arduino, PlatformIO, Wokwi)
 
-You need to finish following 4 exercises
+My lab work for the IoT course at Turin Polytechnic University in Tashkent (TTPU, 2026). Each exercise is one ESP32 program, written in C++ with the Arduino framework. The programs run in the [Wokwi](https://wokwi.com) simulator or on a real board.
 
-### Setup Configuration in this Wokwi Project template:
+They start with LEDs and sensors, then move to Wi-Fi, HTTP and MQTT. In the last labs, two boards control each other's LEDs through an MQTT broker.
 
-- RED LED - `D26`
-- Green LED - `D27`
-- Blue LED - `D14`
-- Yellow LED - `D12`
+## Programs
 
+| Program | File | PlatformIO env | What it does |
+|---|---|---|---|
+| LED chase | `src/ex1.cpp` | `ex1` | Lights RED → GREEN → YELLOW → BLUE → YELLOW → GREEN one at a time, 150 ms per step, and prints `chase=<LED>` |
+| Light sensor statistics | `src/ex2.cpp` | `ex2` | Every second, reads the light sensor 10 times and prints `min=… max=… avg=…` |
+| Threshold alert with hysteresis | `src/ex3.cpp` | `ex3` | Turns the alert on above 3000 and off below 2500, and prints `ALERT=1` / `ALERT=0` only when it changes |
+| Button counter | `src/ex4.cpp` | `ex4` | Counts button presses from 0 to 4 with edge detection and lights that many LEDs |
+| Light-activated buzzer | `src/ex5.cpp` | `ex5` | Turns the buzzer on when the light level goes above a threshold, and off when it drops back |
+| Wi-Fi + HTTP | `src/lab_7_wifi.cpp` | `lab_7_wifi` | Connects to Wi-Fi, prints the local IP, and keeps asking an HTTP endpoint for commands like `redon` / `redoff` |
+| MQTT tasks | `src/lab_8_.cpp` | `lab_8_wifi1` | Publishes a hello message to `ttpu/led`, prints the time from `time/now`, publishes button `pressed` / `released`, and switches LEDs on commands from `ttpu/<name>/led` |
+| MQTT: two boards | `src/lab_8.cpp` | `lab_8_wifi` | Each button press moves the partner board's LEDs to the next colour. Also listens on its own topic, so the partner can control this board |
+| MQTT: remote control | `src/lab_9.cpp` | `lab_9_wifi` | A button press sends the next LED command to the partner board's topic |
 
-- Button (Active high) - `D25`
-- Light sensor (analog) - `D33`
+## Wiring
 
-- LCD I2C - SDA: `D21`
-- LCD I2C - SCL: `D22`
+| Part | ESP32 pin |
+|---|---|
+| Red LED | D26 |
+| Green LED | D27 |
+| Blue LED | D14 |
+| Yellow LED | D12 |
+| Button (active high) | D25 |
+| Light sensor (analog) | D33 |
+| Buzzer | D32 |
+| LCD I2C | SDA D21, SCL D22 |
+| Servo | D5 |
 
-- Servo Motor: `D5`
+![Wokwi circuit](image.png)
 
-- Buzzer: `D32`
+## Run
 
-![alt text](image.png)
+1. Install VS Code with the PlatformIO and Wokwi extensions.
+2. For the Wi-Fi and MQTT labs, copy `src/secrets.example.h` to `src/secrets.h` and fill in your Wi-Fi and MQTT credentials. `src/secrets.h` is ignored by git.
+3. Choose an environment from the table (or set `default_envs` in `platformio.ini`), then build:
+   ```bash
+   pio run -e ex1
+   ```
+4. Start the Wokwi simulator, or upload to a board with `pio run -e ex1 -t upload`.
 
+## Stack
 
-## 1) LED chase (Knight Rider)
-- Cycle through **RED (D26) → GREEN (D27) → YELLOW (D12) → BLUE (D14) → YELLOW (D12) → GREEN (D27)** and repeat, turning on one LED at a time for 150 ms while the others stay OFF.  
-- Keep track of the step index in a variable (do not use `delay()` chains longer than one step - use a single `delay(150)` per loop iteration).  
-- Serial: Print the name of the LED that just turned on, e.g. `chase=RED`.
-
----
-
-## 2) Serial-only sensor statistics
-- Every 1000 ms, take **10 back-to-back `analogRead()` samples** of **LIGHT (D33)** (no delay between the samples themselves).  
-- Compute the **minimum**, **maximum** and **average** of those 10 samples.  
-- No LEDs are used in this exercise.  
-- Serial: Print one line per second in the format `min=120 max=340 avg=210`.
-
----
-
-## 3) Sensor threshold alert with hysteresis
-- Every 300 ms, read **LIGHT (D33)**.  
-- Maintain a boolean `alertActive` state:  
-  - If the reading rises **above 3000** and the alert is not already active, set it active.  
-  - If the reading drops **below 2500** and the alert is active, clear it.  
-  (This gap between 2500 and 3000 prevents rapid flickering.)  
-- No LEDs are used in this exercise.  
-- Serial: Print `ALERT=1` only the moment it becomes active, and `ALERT=0` only the moment it clears (not on every loop).
-
----
-
-## 4) Button press counter with pattern
-- Detect **BUTTON (D25)** presses using proper edge detection (act once per press, not once per loop while held).  
-- Keep a press counter that increases by 1 on each press and wraps back to 0 after reaching 4.  
-- Based on the counter value, light up exactly that many LEDs simultaneously, in this fixed order: **RED (D26)**, then **GREEN (D27)**, then **YELLOW (D12)**, then **BLUE (D14)** (e.g. counter=2 → RED and GREEN ON, YELLOW and BLUE OFF).  
-- Serial: Print `count=<n>` every time the counter changes.
+ESP32 · C++ / Arduino · PlatformIO · Wokwi · WiFi · HTTPClient · PubSubClient (MQTT)
